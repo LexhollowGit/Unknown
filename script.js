@@ -13,12 +13,12 @@ let player = {
 };
 
 const gravity = 0.8;
-const jumpPower = -12;
+const jumpPower = -14; // stronger jump for easier clearance
 const groundY = 340;
 
 // Obstacles
 let obstacles = [];
-let scrollSpeed = 3; // slower (was 5)
+let scrollSpeed = 5; // back to original fast speed
 
 // Game state
 let gameOver = false;
@@ -27,10 +27,7 @@ let gameOver = false;
 let keys = {};
 document.addEventListener("keydown", (e) => {
   keys[e.code] = true;
-
-  if (gameOver && e.code === "KeyR") {
-    restartGame();
-  }
+  if (gameOver && e.code === "KeyR") restartGame();
 });
 document.addEventListener("keyup", (e) => {
   keys[e.code] = false;
@@ -39,9 +36,9 @@ document.addEventListener("keyup", (e) => {
 // Initialize obstacles
 function createObstacles() {
   obstacles = [
-    { x: 600, y: 300, width: 30, height: 40, color: "black" },
-    { x: 1000, y: 300, width: 30, height: 50, color: "black" },
-    { x: 1500, y: 300, width: 30, height: 40, color: "black" }
+    { x: 600, y: 300, width: 30, height: 30, color: "black" },
+    { x: 1000, y: 300, width: 30, height: 35, color: "black" },
+    { x: 1500, y: 300, width: 30, height: 25, color: "black" }
   ];
 }
 
@@ -79,10 +76,10 @@ function update() {
   for (let obs of obstacles) {
     obs.x -= scrollSpeed;
 
-    // Reset with more distance
+    // Reset with more distance + keep them short
     if (obs.x + obs.width < 0) {
-      obs.x = canvas.width + 400 + Math.random() * 300; // more gap
-      obs.height = 30 + Math.random() * 40; // smaller
+      obs.x = canvas.width + 400 + Math.random() * 300;
+      obs.height = 20 + Math.random() * 25; // always short obstacles
     }
 
     // Collision
