@@ -18,7 +18,7 @@ const groundY = 340;
 
 // Obstacles
 let obstacles = [];
-const scrollSpeed = 5;
+let scrollSpeed = 3; // slower (was 5)
 
 // Game state
 let gameOver = false;
@@ -28,7 +28,6 @@ let keys = {};
 document.addEventListener("keydown", (e) => {
   keys[e.code] = true;
 
-  // Restart if game over and R is pressed
   if (gameOver && e.code === "KeyR") {
     restartGame();
   }
@@ -40,9 +39,9 @@ document.addEventListener("keyup", (e) => {
 // Initialize obstacles
 function createObstacles() {
   obstacles = [
-    { x: 600, y: 300, width: 40, height: 40, color: "black" },
-    { x: 900, y: 300, width: 40, height: 80, color: "black" },
-    { x: 1200, y: 300, width: 60, height: 40, color: "black" }
+    { x: 600, y: 300, width: 30, height: 40, color: "black" },
+    { x: 1000, y: 300, width: 30, height: 50, color: "black" },
+    { x: 1500, y: 300, width: 30, height: 40, color: "black" }
   ];
 }
 
@@ -55,7 +54,7 @@ function restartGame() {
   gameOver = false;
 }
 
-// Update game
+// Update
 function update() {
   if (gameOver) return;
 
@@ -69,7 +68,7 @@ function update() {
   player.y += player.velocityY;
   player.velocityY += gravity;
 
-  // Ground collision
+  // Ground
   if (player.y > groundY) {
     player.y = groundY;
     player.velocityY = 0;
@@ -80,13 +79,13 @@ function update() {
   for (let obs of obstacles) {
     obs.x -= scrollSpeed;
 
-    // Reset obstacle if offscreen
+    // Reset with more distance
     if (obs.x + obs.width < 0) {
-      obs.x = canvas.width + Math.random() * 400;
-      obs.height = 40 + Math.random() * 60;
+      obs.x = canvas.width + 400 + Math.random() * 300; // more gap
+      obs.height = 30 + Math.random() * 40; // smaller
     }
 
-    // Collision detection
+    // Collision
     if (
       player.x < obs.x + obs.width &&
       player.x + player.width > obs.x &&
@@ -98,7 +97,7 @@ function update() {
   }
 }
 
-// Draw game
+// Draw
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -116,7 +115,7 @@ function draw() {
     ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
   }
 
-  // Game Over message
+  // Game Over text
   if (gameOver) {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
@@ -126,7 +125,7 @@ function draw() {
   }
 }
 
-// Game loop
+// Loop
 function gameLoop() {
   update();
   draw();
