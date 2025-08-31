@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 
 // Player
 let player = {
-  x: 100, // fixed near the left
+  x: 100,
   y: 300,
   width: 40,
   height: 40,
@@ -16,27 +16,50 @@ const gravity = 0.8;
 const jumpPower = -12;
 const groundY = 340;
 
-// Obstacles (moving platforms / blocks)
-let obstacles = [
-  { x: 600, y: 300, width: 40, height: 40, color: "black" },
-  { x: 900, y: 300, width: 40, height: 80, color: "black" },
-  { x: 1200, y: 300, width: 60, height: 40, color: "black" }
-];
-
+// Obstacles
+let obstacles = [];
 const scrollSpeed = 5;
+
+// Game state
+let gameOver = false;
 
 // Input
 let keys = {};
 document.addEventListener("keydown", (e) => {
   keys[e.code] = true;
+
+  // Restart if game over and R is pressed
+  if (gameOver && e.code === "KeyR") {
+    restartGame();
+  }
 });
 document.addEventListener("keyup", (e) => {
   keys[e.code] = false;
 });
 
+// Initialize obstacles
+function createObstacles() {
+  obstacles = [
+    { x: 600, y: 300, width: 40, height: 40, color: "black" },
+    { x: 900, y: 300, width: 40, height: 80, color: "black" },
+    { x: 1200, y: 300, width: 60, height: 40, color: "black" }
+  ];
+}
+
+// Restart game
+function restartGame() {
+  player.y = 300;
+  player.velocityY = 0;
+  player.jumping = false;
+  createObstacles();
+  gameOver = false;
+}
+
 // Update game
 function update() {
-  // Jump (space key)
+  if (gameOver) return;
+
+  // Jump
   if (keys["Space"] && !player.jumping) {
     player.velocityY = jumpPower;
     player.jumping = true;
@@ -53,25 +76,24 @@ function update() {
     player.jumping = false;
   }
 
-  // Move obstacles left
+  // Move obstacles
   for (let obs of obstacles) {
     obs.x -= scrollSpeed;
 
-    // Reset obstacle when it goes off screen
+    // Reset obstacle if offscreen
     if (obs.x + obs.width < 0) {
-      obs.x = canvas.width + Math.random() * 400; // respawn ahead
-      obs.height = 40 + Math.random() * 60;       // random size
+      obs.x = canvas.width + Math.random() * 400;
+      obs.height = 40 + Math.random() * 60;
     }
 
-    // Collision detection (basic)
+    // Collision detection
     if (
       player.x < obs.x + obs.width &&
       player.x + player.width > obs.x &&
       player.y < obs.y + obs.height &&
       player.y + player.height > obs.y
     ) {
-      alert("Game Over! Refresh to restart.");
-      document.location.reload();
+      gameOver = true;
     }
   }
 }
@@ -93,6 +115,15 @@ function draw() {
     ctx.fillStyle = obs.color;
     ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
   }
+
+  // Game Over message
+  if (gameOver) {
+    ctx.fillStyle = "black";
+    ctx.font = "30px Arial";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 90, canvas.height / 2);
+    ctx.font = "20px Arial";
+    ctx.fillText("Press R to Restart", canvas.width / 2 - 100, canvas.height / 2 + 40);
+  }
 }
 
 // Game loop
@@ -102,4 +133,5 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+createObstacles();
 gameLoop();
