@@ -1,13 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Mario Game</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stickman Fighter — Player vs CPU</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div class="wrap">
+    <header>
+      <div class="title">🗡️ Stickman Fighter — Player vs CPU</div>
+      <div class="controls">
+        <label>Difficulty: 
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="mid" selected>Mid</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+        <button id="restart">Restart</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="stage panel">
+        <canvas id="game" width="960" height="540" aria-label="stickman arena"></canvas>
+        <div class="hud" aria-hidden="true"></div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <h3>Controls</h3>
+          <div class="controls-grid">
+            <div class="kbd">A</div><div>Move Left</div>
+            <div class="kbd">D</div><div>Move Right</div>
+            <div class="kbd">W / Space</div><div>Jump</div>
+            <div class="kbd">J</div><div>Light Attack</div>
+            <div class="kbd">K</div><div>Heavy Attack</div>
+            <div class="kbd">L</div><div>Block / Guard</div>
+          </div>
+        </div>
+        <div class="panel small" id="stats">Target 64 FPS</div>
+        <div class="panel small">
+          <strong>Tip:</strong> Mid = balanced AI. Hard = faster, smarter, feints & better defense. Easy = forgiving.
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div>Procedural animation • Fixed timestep (1/64s) • ~64 FPS</div>
+      <div id="version" class="small"></div>
+    </footer>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
